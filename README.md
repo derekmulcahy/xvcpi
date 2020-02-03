@@ -12,11 +12,20 @@ Note: The Raspberry Pi is a 3.3V device. Ensure that the target device and the P
 
 JTAG uses 4 signals, TMS, TDI, TDO and, TCK.
 From the Raspberry Pi perspective, TMS, TDI and TCK are outputs, and TDO is an input.
-The pin mappings for the Raspberry Pi header are:
+The default pin mappings for the Raspberry Pi header are:
 ```
 TMS=25, TDI=10, TCK=11, TDO=9
 ```
-In addition a ground connection is required. Pin 23 is a conveniently placed GND.
+The pin mappings can be changed by optional flags of **xvcpi**: -c(for TCK), -m(for TMS), -i(for TDI), -o(for TDO). 
+```
+./xvcpi -c 22 -m 23 -i 24 -o 25
+```
+Above command changes the pin mappings to:
+```
+TMS=23, TDI=24, TCK=22, TDO=25
+```
+
+In addition a ground connection is required. Pin 6 of the Model B+ 40-Pin header is a conveniently placed GND.
 
 Note that XVC does not provide control of either SRST or TRST and **xvcpi** does not support a RST signal.
 
