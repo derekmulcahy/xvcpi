@@ -21,31 +21,14 @@
 #include <netinet/in.h>
 #include <pthread.h>
 
-#define MAP_SIZE      0x10000
+#include <pigpio.h>
+#include <signal.h>
 
 #define ERROR_JTAG_INIT_FAILED -1
 #define ERROR_OK 1
 
-uint32_t bcm2835_peri_base = 0x20000000;
-#define BCM2835_GPIO_BASE	(bcm2835_peri_base + 0x200000) /* GPIO controller */
-
-#define BCM2835_PADS_GPIO_0_27		(bcm2835_peri_base + 0x100000)
-#define BCM2835_PADS_GPIO_0_27_OFFSET	(0x2c / 4)
-
-/* GPIO setup macros */
-#define MODE_GPIO(g) (*(pio_base+((g)/10))>>(((g)%10)*3) & 7)
-#define INP_GPIO(g) do { *(pio_base+((g)/10)) &= ~(7<<(((g)%10)*3)); } while (0)
-#define SET_MODE_GPIO(g, m) do { /* clear the mode bits first, then set as necessary */ \
-		INP_GPIO(g);						\
-		*(pio_base+((g)/10)) |=  ((m)<<(((g)%10)*3)); } while (0)
-#define OUT_GPIO(g) SET_MODE_GPIO(g, 1)
-
-#define GPIO_SET (*(pio_base+7))  /* sets   bits which are 1, ignores bits which are 0 */
-#define GPIO_CLR (*(pio_base+10)) /* clears bits which are 1, ignores bits which are 0 */
-#define GPIO_LEV (*(pio_base+13)) /* current level of the pin */
-
-static int dev_mem_fd;
-static volatile uint32_t *pio_base;
+#define INP_GPIO(g) do { gpioSetMode(g, PI_INPUT); } while (0)
+#define OUT_GPIO(g) do { gpioSetMode(g, PI_OUTPUT); } while (0)
 
 static uint32_t bcm2835gpio_xfer(int n, uint32_t tms, uint32_t tdi);
 static int bcm2835gpio_read(void);
@@ -79,65 +62,42 @@ static uint32_t bcm2835gpio_xfer(int n, uint32_t tms, uint32_t tdi)
 
 static int bcm2835gpio_read(void)
 {
-	return !!(GPIO_LEV & 1<<tdo_gpio);
+	return gpioRead(tdo_gpio);
 }
 
 static void bcm2835gpio_write(int tck, int tms, int tdi)
 {
-	uint32_t set = tck<<tck_gpio | tms<<tms_gpio | tdi<<tdi_gpio;
-	uint32_t clear = !tck<<tck_gpio | !tms<<tms_gpio | !tdi<<tdi_gpio;
-
-	GPIO_SET = set;
-	GPIO_CLR = clear;
+	gpioWrite(tck_gpio, tck);
+	gpioWrite(tms_gpio, tms);
+	gpioWrite(tdi_gpio, tdi);
 
 	for (unsigned int i = 0; i < jtag_delay; i++)
 		asm volatile ("");
 }
 
+static void stop_running(int sig)
+{
+	gpioTerminate();
+}
+
 static int bcm2835gpio_init(void)
 {
-	dev_mem_fd = open("/dev/mem", O_RDWR | O_SYNC);
-	if (dev_mem_fd < 0) {
-		perror("open");
+	if (gpioInitialise() < 0)
+	{
 		return ERROR_JTAG_INIT_FAILED;
 	}
 
-	pio_base = mmap(NULL, sysconf(_SC_PAGE_SIZE), PROT_READ | PROT_WRITE,
-				MAP_SHARED, dev_mem_fd, BCM2835_GPIO_BASE);
+	gpioSetSignalFunc(SIGINT, stop_running);
 
-	if (pio_base == MAP_FAILED) {
-		perror("mmap");
-		close(dev_mem_fd);
-		return ERROR_JTAG_INIT_FAILED;
-	}
-
-	static volatile uint32_t *pads_base;
-	pads_base = mmap(NULL, sysconf(_SC_PAGE_SIZE), PROT_READ | PROT_WRITE,
-				MAP_SHARED, dev_mem_fd, BCM2835_PADS_GPIO_0_27);
-
-	if (pads_base == MAP_FAILED) {
-		perror("mmap");
-		close(dev_mem_fd);
-		return ERROR_JTAG_INIT_FAILED;
-	}
-
-	/* set 4mA drive strength, slew rate limited, hysteresis on */
-	pads_base[BCM2835_PADS_GPIO_0_27_OFFSET] = 0x5a000008 + 1;
-
-	/*
-	 * Configure TDO as an input, and TDI, TCK, TMS
-	 * as outputs.  Drive TDI and TCK low, and TMS high.
-	 */
 	INP_GPIO(tdo_gpio);
 
-	GPIO_CLR = 1<<tdi_gpio | 1<<tck_gpio;
-	GPIO_SET = 1<<tms_gpio;
+	gpioWrite(tdi_gpio, 0);
+	gpioWrite(tck_gpio, 0);
+	gpioWrite(tms_gpio, 1);
 
 	OUT_GPIO(tdi_gpio);
 	OUT_GPIO(tck_gpio);
 	OUT_GPIO(tms_gpio);
-
-	bcm2835gpio_write(0, 1, 0);
 
 	return ERROR_OK;
 }
@@ -298,14 +258,21 @@ int main(int argc, char **argv) {
 
    opterr = 0;
 
-   while ((c = getopt(argc, argv, "v")) != -1)
+   while ((c = getopt(argc, argv, "vc:m:i:o:")) != -1)
       switch (c) {
       case 'v':
          verbose = 1;
-         break;
       case '?':
-         fprintf(stderr, "usage: %s [-v]\n", *argv);
+         fprintf(stderr, "usage: %s [-v] [-c 0~31] [-m 0~31] [-i 0~31] [-o 0~31]\n", *argv);
          return 1;
+      case 'c':
+         tck_gpio = atoi(optarg);
+      case 'm':
+         tms_gpio = atoi(optarg);
+      case 'i':
+         tdi_gpio = atoi(optarg);
+      case 'o':
+         tdo_gpio = atoi(optarg);
       }
 
    if (bcm2835gpio_init() < 1) {
@@ -313,10 +280,14 @@ int main(int argc, char **argv) {
       return -1;
    }
 
+   fprintf(stderr,"XVCPI initialized with: \n");
+   fprintf(stderr,"  tck:gpio[%d], tms:gpio[%d], tdi:gpio[%d], tdo:gpio[%d]\n", tck_gpio,tms_gpio,tdi_gpio,tdo_gpio);
+
    s = socket(AF_INET, SOCK_STREAM, 0);
 
    if (s < 0) {
       perror("socket");
+      gpioTerminate();
       return 1;
    }
 
@@ -329,11 +300,13 @@ int main(int argc, char **argv) {
 
    if (bind(s, (struct sockaddr*) &address, sizeof(address)) < 0) {
       perror("bind");
+      gpioTerminate();
       return 1;
    }
 
    if (listen(s, 0) < 0) {
       perror("listen");
+      gpioTerminate();
       return 1;
    }
 
@@ -399,6 +372,8 @@ int main(int argc, char **argv) {
          }
       }
    }
+
+   gpioTerminate();
    return 0;
 }
 
