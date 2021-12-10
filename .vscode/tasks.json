@@ -36,8 +36,8 @@
                 }
             },
             "group": {
-                "_id": "build",
-                "isDefault": false
+                "kind": "build",
+                "isDefault": true
             }
         }
     ]
