@@ -1,0 +1,175 @@
+connection accepted - fd 5
+1639083033 : Received command: 'getinfo'
+	 Replied with xvcServer_v1.0:2048
+
+1639083035 : Received command: 'settck'
+	 Replied with 'd'
+
+1639083035 : Received command: 'shift'
+	Number of Bits  : 43
+	Number of Bytes : 6
+
+LEN : 0x00000020
+TMS : 0x0000005f
+TDI : 0x0001fe00
+TDO : 0xffffffff
+LEN : 0x0000000b
+TMS : 0x00000300
+TDI : 0x00000000
+TDO : 0x000007ff
+1639083035 : Received command: 'shift'
+	Number of Bits  : 1070
+	Number of Bytes : 134
+
+LEN : 0x00000020
+TMS : 0x000002ff
+TDI : 0x000ff000
+TDO : 0xffffffff
+LEN : 0x00000020
+TMS : 0x00000000
+TDI : 0x000ff000
+TDO : 0xffffffff
+LEN : 0x00000020
+TMS : 0x00000000
+TDI : 0x000ff000
+TDO : 0xffffffff
+LEN : 0x00000020
+TMS : 0x00000000
+TDI : 0x000ff000
+TDO : 0xffffffff
+LEN : 0x00000020
+TMS : 0x00000000
+TDI : 0x000ff000
+TDO : 0xffffffff
+LEN : 0x00000020
+TMS : 0x00000000
+TDI : 0x000ff000
+TDO : 0xffffffff
+LEN : 0x00000020
+TMS : 0x00000000
+TDI : 0x000ff000
+TDO : 0xffffffff
+LEN : 0x00000020
+TMS : 0x00000000
+TDI : 0x000ff000
+TDO : 0xffffffff
+LEN : 0x00000020
+TMS : 0x00000000
+TDI : 0x000ff000
+TDO : 0xffffffff
+LEN : 0x00000020
+TMS : 0x00000000
+TDI : 0x000ff000
+TDO : 0xffffffff
+LEN : 0x00000020
+TMS : 0x00000000
+TDI : 0x000ff000
+TDO : 0xffffffff
+LEN : 0x00000020
+TMS : 0x00000000
+TDI : 0x000ff000
+TDO : 0xffffffff
+LEN : 0x00000020
+TMS : 0x00000000
+TDI : 0x000ff000
+TDO : 0xffffffff
+LEN : 0x00000020
+TMS : 0x00000000
+TDI : 0x000ff000
+TDO : 0xffffffff
+LEN : 0x00000020
+TMS : 0x00000000
+TDI : 0x000ff000
+TDO : 0xffffffff
+LEN : 0x00000020
+TMS : 0x00000000
+TDI : 0x000ff000
+TDO : 0xffffffff
+LEN : 0x00000020
+TMS : 0x00000000
+TDI : 0x000ff000
+TDO : 0xffffffff
+LEN : 0x00000020
+TMS : 0x00000000
+TDI : 0x000ff000
+TDO : 0xffffffff
+LEN : 0x00000020
+TMS : 0x00000000
+TDI : 0x000ff000
+TDO : 0xffffffff
+LEN : 0x00000020
+TMS : 0x00000000
+TDI : 0x000ff000
+TDO : 0xffffffff
+LEN : 0x00000020
+TMS : 0x00000000
+TDI : 0x000ff000
+TDO : 0xffffffff
+LEN : 0x00000020
+TMS : 0x00000000
+TDI : 0x000ff000
+TDO : 0xffffffff
+LEN : 0x00000020
+TMS : 0x00000000
+TDI : 0x000ff000
+TDO : 0xffffffff
+LEN : 0x00000020
+TMS : 0x00000000
+TDI : 0x000ff000
+TDO : 0xffffffff
+LEN : 0x00000020
+TMS : 0x00000000
+TDI : 0x000ff000
+TDO : 0xffffffff
+LEN : 0x00000020
+TMS : 0x00000000
+TDI : 0x000ff000
+TDO : 0xffffffff
+LEN : 0x00000020
+TMS : 0x00000000
+TDI : 0x000ff000
+TDO : 0xffffffff
+LEN : 0x00000020
+TMS : 0x00000000
+TDI : 0x000ff000
+TDO : 0xffffffff
+LEN : 0x00000020
+TMS : 0x00000000
+TDI : 0x000ff000
+TDO : 0xffffffff
+LEN : 0x00000020
+TMS : 0x00000000
+TDI : 0x000ff000
+TDO : 0xffffffff
+LEN : 0x00000020
+TMS : 0x00000000
+TDI : 0x000ff000
+TDO : 0xffffffff
+LEN : 0x00000020
+TMS : 0x00000000
+TDI : 0x000ff000
+TDO : 0xffffffff
+LEN : 0x00000020
+TMS : 0x00000000
+TDI : 0x000ff000
+TDO : 0xffffffff
+LEN : 0x0000000e
+TMS : 0x00001800
+TDI : 0x00000000
+TDO : 0x00003fff
+1639083035 : Received command: 'shift'
+	Number of Bits  : 46
+	Number of Bytes : 6
+
+LEN : 0x00000020
+TMS : 0x000002ff
+TDI : 0x000ff000
+TDO : 0xffffffff
+LEN : 0x0000000e
+TMS : 0x00001800
+TDI : 0x00000000
+TDO : 0x00003fff
+1639083035 : Received command: 'shift'
+	Number of Bits  : 1070
+	Number of Bytes : 134
+
