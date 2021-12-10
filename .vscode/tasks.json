@@ -1,18 +1,25 @@
 {
     // See https://go.microsoft.com/fwlink/?LinkId=733558
     // for the documentation about the tasks.json format
-    "version": "0.1.0",
+    "version": "2.0.0",
     "command": "make",
-    "isShellCommand": true,
     "tasks": [
         {
-            "taskName": "clean"
+            "label": "clean",
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "clean"
+            ],
+            "problemMatcher": []
         },
         {
-            "taskName": "all",
-            "isBuildCommand": true,
-            "showOutput": "silent",
-            "args": [],
+            "label": "all",
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "all"
+            ],
             "problemMatcher": {
                 "owner": "cpp",
                 "fileLocation": [
@@ -27,6 +34,10 @@
                     "severity": 4,
                     "message": 5
                 }
+            },
+            "group": {
+                "_id": "build",
+                "isDefault": false
             }
         }
     ]
