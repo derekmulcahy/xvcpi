@@ -31,7 +31,7 @@ The JTAG interface speed can be controlled by specifiying an integer delay after
 The maximum speed is dependent on the speed of the Pi, the quality of the connections and the target device.
 Delay values from 200 to 1000 work well. Smaller is faster, larger more reliable!
 
-Vivado connects to **xvcpi** via an intermediate software server called hw_server. To allow Vivado "autodiscovery" of **pipi** via hw_server run:
+Vivado connects to **xvcpi** via an intermediate software server called hw_server. To allow Vivado "autodiscovery" of **xvcpi** via hw_server run:
 
 ```
 hw_server -e 'set auto-open-servers xilinx-xvc:<xvcpi-server>:2542'
